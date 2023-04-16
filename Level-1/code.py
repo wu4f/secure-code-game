@@ -12,22 +12,24 @@
 '''
 
 from collections import namedtuple
+import math
 
 Order = namedtuple('Order', 'id, items')
 Item = namedtuple('Item', 'type, description, amount, quantity')
 
 def validorder(order: Order):
-    net = 0
+    payment = 0
+    costs = 0
     
     for item in order.items:
         if item.type == 'payment':
-            net += item.amount
+            payment += 100*item.amount
         elif item.type == 'product':
-            net -= item.amount * item.quantity
+            costs += 100*item.amount * item.quantity
         else:
             return("Invalid item type: %s" % item.type)
     
-    if net != 0:
-        return("Order ID: %s - Payment imbalance: $%0.2f" % (order.id, net))
+    if int(payment) != int(costs):
+        return("Order ID: %s - Payment imbalance: $%0.2f" % (order.id, (payment-costs)/100))
     else:
         return("Order ID: %s - Full payment received!" % order.id)
